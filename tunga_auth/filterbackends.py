@@ -30,6 +30,17 @@ class UserFilterBackend(DRYPermissionFiltersBase):
             queryset = queryset.exclude(id=request.user.id)
         queryset = queryset.exclude(pending=True)
         user_filter = request.query_params.get('filter', None)
+        project_id = request.query_params.get('project', None)
+        if project_id:
+            queryset = queryset.filter(
+                Q(projects_created__id=project_id) | # Is Creator
+                Q(projects_managed__id=project_id) | # Is PM
+                Q(projects_owned__id=project_id) | # Is Owner
+                (
+                    Q(project_participation__project__id=project_id) &
+                    Q(project_participation__status=STATUS_ACCEPTED)
+                ) # Is Approved Developer
+            )
         if user_filter in ['developers', 'project-owners', 'clients', 'project-managers', 'pms']:
             if user_filter == 'developers':
                 queryset = queryset.filter(type=USER_TYPE_DEVELOPER)
