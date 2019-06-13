@@ -33,6 +33,7 @@ from tunga_utils import stripe_utils
 from tunga_utils.constants import PAYMENT_METHOD_STRIPE, CURRENCY_EUR, STATUS_COMPLETED, INVOICE_TYPE_CREDIT_NOTA, \
     INVOICE_TYPE_PURCHASE
 from tunga_utils.filterbackends import DEFAULT_FILTER_BACKENDS
+from tunga_utils.pagination import LargeResultsSetPagination
 
 
 class InvoiceViewSet(ModelViewSet):
@@ -41,6 +42,7 @@ class InvoiceViewSet(ModelViewSet):
     permission_classes = [IsAuthenticated, DRYPermissions]
     filter_class = InvoiceFilter
     filter_backends = DEFAULT_FILTER_BACKENDS + (InvoiceFilterBackend,)
+    pagination_class = LargeResultsSetPagination
     search_fields = ('title', '^project__title')
 
     def update(self, request, *args, **kwargs):
