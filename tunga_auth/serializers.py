@@ -32,7 +32,9 @@ from tunga_utils.validators import validate_email, validate_username
 class UserSerializer(NestedModelSerializer, SimpleUserSerializer, GetCurrentUserAnnotatedSerializerMixin):
     display_name = serializers.CharField(read_only=True, required=False)
     display_type = serializers.CharField(read_only=True, required=False)
+    display_category = serializers.CharField(read_only=True, required=False)
     is_developer = serializers.BooleanField(read_only=True, required=False)
+    is_designer = serializers.BooleanField(read_only=True, required=False)
     is_project_owner = serializers.BooleanField(read_only=True, required=False)
     is_project_manager = serializers.BooleanField(read_only=True, required=False)
     is_admin = serializers.BooleanField(read_only=True, required=False)

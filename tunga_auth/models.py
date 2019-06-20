@@ -13,13 +13,18 @@ from tunga_utils import bitcoin_utils, coinbase_utils
 from tunga_utils.constants import PAYMENT_METHOD_BTC_ADDRESS, PAYMENT_METHOD_BTC_WALLET, BTC_WALLET_PROVIDER_COINBASE, \
     USER_TYPE_DEVELOPER, USER_TYPE_PROJECT_OWNER, USER_TYPE_PROJECT_MANAGER, USER_SOURCE_DEFAULT, \
     USER_SOURCE_TASK_WIZARD, STATUS_INITIAL, STATUS_APPROVED, STATUS_DECLINED, STATUS_PENDING, USER_SOURCE_MANUAL, \
-    STATUS_INITIATED
+    STATUS_INITIATED, USER_CATEGORY_DEVELOPER, USER_CATEGORY_DESIGNER
 from tunga_utils.validators import validate_file_size
 
 USER_TYPE_CHOICES = (
     (USER_TYPE_DEVELOPER, 'Developer'),
     (USER_TYPE_PROJECT_OWNER, 'Project Owner'),
     (USER_TYPE_PROJECT_MANAGER, 'Project Manager')
+)
+
+USER_CATEGORY_CHOICES = (
+    (USER_CATEGORY_DEVELOPER, 'Developer'),
+    (USER_CATEGORY_DESIGNER, 'Designer')
 )
 
 USER_SOURCE_CHOICES = (
@@ -39,6 +44,7 @@ PAYONEER_STATUS_CHOICES = (
 
 class TungaUser(AbstractUser):
     type = models.IntegerField(choices=USER_TYPE_CHOICES, blank=True, null=True)
+    category = models.CharField(max_length=20, choices=USER_CATEGORY_CHOICES, blank=True, null=True)
     is_internal = models.BooleanField(default=False)
     image = models.ImageField(upload_to='photos/%Y/%m/%d', blank=True, null=True, validators=[validate_file_size])
     verified = models.BooleanField(default=False)
@@ -65,6 +71,8 @@ class TungaUser(AbstractUser):
     def save(self, *args, **kwargs):
         if self.type == USER_TYPE_PROJECT_OWNER:
             self.pending = False
+        elif self.type == USER_TYPE_DEVELOPER and not self.category:
+            self.category = USER_CATEGORY_DEVELOPER
         super(TungaUser, self).save(*args, **kwargs)
 
     def __str__(self):
@@ -105,7 +113,15 @@ class TungaUser(AbstractUser):
 
     @property
     def display_type(self):
+        if self.category == USER_CATEGORY_DESIGNER:
+            return self.get_category_display()
         return self.get_type_display()
+
+    @property
+    def display_category(self):
+        if self.type == USER_TYPE_DEVELOPER and not self.category:
+            return 'Developer'
+        return self.get_category_display()
 
     @property
     def is_admin(self):
@@ -118,6 +134,10 @@ class TungaUser(AbstractUser):
     @property
     def is_developer(self):
         return self.type == USER_TYPE_DEVELOPER
+
+    @property
+    def is_designer(self):
+        return self.type == USER_TYPE_DEVELOPER and self.category == USER_CATEGORY_DESIGNER
 
     @property
     def is_project_owner(self):
