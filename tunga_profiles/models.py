@@ -221,6 +221,13 @@ class UserProfile(models.Model):
             other=self.get_category_skills(SKILL_TYPE_OTHER),
         )
 
+    @property
+    def tunga_badge(self):
+        user = self.user
+        user_participations = user.project_participation.all()
+        # Implement logic here
+        return 'default_badge'
+
 
 @python_2_unicode_compatible
 class Company(models.Model):

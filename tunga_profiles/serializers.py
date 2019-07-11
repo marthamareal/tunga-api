@@ -20,6 +20,7 @@ class ProfileSerializer(NestedModelSerializer, ContentTypeAnnotatedModelSerializ
     skills_details = SkillsDetailsSerializer(required=False, read_only=True)
     country = CountryField(required=False)
     country_name = serializers.CharField(required=False, read_only=True)
+    tunga_badge = serializers.CharField(required=False, read_only=True)
 
     class Meta:
         model = UserProfile

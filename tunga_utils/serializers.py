@@ -268,7 +268,7 @@ class SearchProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
         fields = (
-            'id', 'bio', 'city', 'country', 'country_name', 'location', 'skills'
+            'id', 'bio', 'city', 'country', 'country_name', 'location', 'skills', 'tunga_badge'
         )
 
 
@@ -342,6 +342,7 @@ class SimpleUserSerializer(serializers.ModelSerializer):
 
 class SimpleProfileSerializer(serializers.ModelSerializer):
     city = serializers.CharField()
+    tunga_badge = serializers.CharField()
     skills = SkillSerializer(many=True)
     country = CountryField()
     country_name = serializers.CharField()
@@ -356,6 +357,7 @@ class SimpleProfileSerializer(serializers.ModelSerializer):
 
 class SimpleSkillsProfileSerializer(serializers.ModelSerializer):
     city = serializers.CharField()
+    tunga_badge = serializers.CharField()
     skills = SkillSerializer(many=True)
     country = CountryField()
     country_name = serializers.CharField()
@@ -363,7 +365,7 @@ class SimpleSkillsProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserProfile
-        fields = ('id', 'skills', 'country', 'country_name', 'city', 'bio', 'skills_details')
+        fields = ('id', 'skills', 'country', 'country_name', 'city', 'bio', 'skills_details', 'tunga_badge')
 
 
 class SimpleUserSkillsProfileSerializer(SimpleUserSerializer):
