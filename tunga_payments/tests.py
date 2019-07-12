@@ -152,7 +152,7 @@ class APIInvoiceTestCase(APITestCase):
         self.client.force_authenticate(user=self.admin)
         response = self.client.post(url, invoice_bulk)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(len(json.loads(response.content)), len(invoice_bulk))
+        self.assertEqual(len(json.loads(response.content.decode('utf-8'))), len(invoice_bulk))
 
     def test_read_invoice(self):
         url = reverse('invoice-list')
