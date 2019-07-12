@@ -364,8 +364,7 @@ class SimpleSkillsProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserProfile
-        fields = ('id', 'skills', 'country', 'country_name', 'city', 'bio',
-                  'skills_details')
+        fields = ('id', 'skills', 'country', 'country_name', 'city', 'bio', 'skills_details')
 
 
 class SimpleUserSkillsProfileSerializer(SimpleUserSerializer):

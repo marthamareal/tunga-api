@@ -270,10 +270,7 @@ class TungaUser(AbstractUser):
     @property
     def projects(self):
         participations = self.project_participation.all()
-        projects = []
-        for participation in participations:
-            projects.append(participation.project)
-        return projects
+        return [participation.project for participation in participations]
 
 
 @python_2_unicode_compatible

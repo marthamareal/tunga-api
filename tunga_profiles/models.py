@@ -14,13 +14,15 @@ from dry_rest_permissions.generics import allow_staff_or_superuser
 
 from tunga import settings
 from tunga_profiles.validators import validate_email
-from tunga_utils.constants import REQUEST_STATUS_INITIAL, REQUEST_STATUS_ACCEPTED, REQUEST_STATUS_REJECTED, \
-    BTC_WALLET_PROVIDER_COINBASE, PAYMENT_METHOD_BTC_WALLET, PAYMENT_METHOD_BTC_ADDRESS, PAYMENT_METHOD_MOBILE_MONEY, \
-    COUNTRY_CODE_UGANDA, COUNTRY_CODE_TANZANIA, COUNTRY_CODE_NIGERIA, APP_INTEGRATION_PROVIDER_SLACK, \
-    APP_INTEGRATION_PROVIDER_HARVEST, USER_TYPE_PROJECT_MANAGER, USER_TYPE_DEVELOPER, USER_TYPE_PROJECT_OWNER, \
-    STATUS_INITIAL, STATUS_ACCEPTED, STATUS_REJECTED, SKILL_TYPE_LANGUAGE, SKILL_TYPE_FRAMEWORK, \
-    SKILL_TYPE_PLATFORM, SKILL_TYPE_LIBRARY, SKILL_TYPE_STORAGE, SKILL_TYPE_API, \
-    SKILL_TYPE_OTHER
+from tunga_utils.constants import (
+    REQUEST_STATUS_INITIAL, REQUEST_STATUS_ACCEPTED, REQUEST_STATUS_REJECTED,
+    BTC_WALLET_PROVIDER_COINBASE, PAYMENT_METHOD_BTC_WALLET, PAYMENT_METHOD_BTC_ADDRESS,
+    PAYMENT_METHOD_MOBILE_MONEY, COUNTRY_CODE_UGANDA, COUNTRY_CODE_TANZANIA, COUNTRY_CODE_NIGERIA,
+    APP_INTEGRATION_PROVIDER_SLACK, APP_INTEGRATION_PROVIDER_HARVEST, USER_TYPE_PROJECT_MANAGER,
+    USER_TYPE_DEVELOPER, USER_TYPE_PROJECT_OWNER, STATUS_INITIAL, STATUS_ACCEPTED, STATUS_REJECTED,
+    SKILL_TYPE_LANGUAGE, SKILL_TYPE_FRAMEWORK, SKILL_TYPE_PLATFORM, SKILL_TYPE_LIBRARY,
+    SKILL_TYPE_STORAGE, SKILL_TYPE_API, SKILL_TYPE_OTHER, TUNGA_DEVELOPER_BADGE,
+    TUNGA_GURU_BADGE, TUNGA_TALENT_BADGE, TUNGA_VETERAN_BADGE)
 from tunga_utils.helpers import get_serialized_id
 from tunga_utils.models import AbstractExperience
 from tunga_utils.validators import validate_btc_address
@@ -225,15 +227,32 @@ class UserProfile(models.Model):
 
     @property
     def tunga_badge(self):
-        user = self.user
-        user_participations = user.project_participation.all()
-        user_projects = user.projects
+        badge = TUNGA_DEVELOPER_BADGE
+        user_projects = self.user.projects
+        total_projects = len(user_projects)
+        user_dedicated_months = self.get_months_of_participation()
+
+        if total_projects in range(0, 4) or user_dedicated_months in range(0, 7):
+            badge = TUNGA_TALENT_BADGE
+
+        if total_projects in range(4, 9) or user_dedicated_months in range(7, 19):
+            badge = TUNGA_VETERAN_BADGE
+
+        if total_projects > 8 or user_dedicated_months > 18:
+            badge = TUNGA_GURU_BADGE
+
+        return badge
+
+    def get_months_of_participation(self):
+        total_months = 0
+        user_participations = self.user.project_participation.all()
         for participation in user_participations:
             start_date = participation.created_at
             end_or_current_date = participation.project.closed_at or datetime.datetime.now()
-            time = relativedelta.relativedelta(end_or_current_date, start_date)
-            months = time.months
-        return 'default_badge'
+
+            period = relativedelta.relativedelta(end_or_current_date, start_date)
+            total_months += period.months
+        return total_months
 
 
 @python_2_unicode_compatible

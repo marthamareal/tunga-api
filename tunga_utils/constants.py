@@ -342,3 +342,9 @@ PROJECT_STAGE_CHOICES = (
 )
 
 EVENT_SOURCE_HUBSPOT = 'hubspot'
+
+# Tunga profile badges
+TUNGA_TALENT_BADGE = 'Talent'
+TUNGA_GURU_BADGE = 'Guru'
+TUNGA_VETERAN_BADGE = 'Veteran'
+TUNGA_DEVELOPER_BADGE = 'Developer'
