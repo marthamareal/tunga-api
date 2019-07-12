@@ -2,9 +2,11 @@
 
 from __future__ import unicode_literals
 
+import datetime
 import uuid
 
 import tagulous.models
+from dateutil import relativedelta
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 from django_countries.fields import CountryField
@@ -225,7 +227,12 @@ class UserProfile(models.Model):
     def tunga_badge(self):
         user = self.user
         user_participations = user.project_participation.all()
-        # Implement logic here
+        user_projects = user.projects
+        for participation in user_participations:
+            start_date = participation.created_at
+            end_or_current_date = participation.project.closed_at or datetime.datetime.now()
+            time = relativedelta.relativedelta(end_or_current_date, start_date)
+            months = time.months
         return 'default_badge'
 
 

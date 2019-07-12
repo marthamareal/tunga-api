@@ -267,6 +267,14 @@ class TungaUser(AbstractUser):
         total_score += self.education_set.all().count() * 0.04
         return total_score
 
+    @property
+    def projects(self):
+        participations = self.project_participation.all()
+        projects = []
+        for participation in participations:
+            projects.append(participation.project)
+        return projects
+
 
 @python_2_unicode_compatible
 class EmailVisitor(models.Model):

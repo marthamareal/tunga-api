@@ -26,6 +26,7 @@ from tunga_utils.models import Rating
 from tunga_utils.serializers import SimpleProfileSerializer, SimpleUserSerializer, SimpleWorkSerializer, \
     SimpleEducationSerializer, SimpleConnectionSerializer, SimpleCompanySerializer, SimplestCompanySerializer, \
     NestedModelSerializer
+from tunga_projects.serializers import ProjectSerializer
 from tunga_utils.validators import validate_email, validate_username
 
 
@@ -39,6 +40,7 @@ class UserSerializer(NestedModelSerializer, SimpleUserSerializer, GetCurrentUser
     is_project_manager = serializers.BooleanField(read_only=True, required=False)
     is_admin = serializers.BooleanField(read_only=True, required=False)
     profile = SimpleProfileSerializer(read_only=True, required=False)
+    projects = ProjectSerializer(many=True, read_only=True, required=False)
     company = SimplestCompanySerializer(required=False)
     work = SimpleWorkSerializer(many=True, source='work_set', read_only=True, required=False)
     education = SimpleEducationSerializer(many=True, source='education_set', read_only=True, required=False)
