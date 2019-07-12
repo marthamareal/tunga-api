@@ -232,7 +232,7 @@ class UserProfile(models.Model):
         total_projects = len(user_projects)
         user_dedicated_months = self.get_months_of_participation()
 
-        if total_projects in range(0, 4) or user_dedicated_months in range(0, 7):
+        if total_projects in range(1, 4) or user_dedicated_months in range(1, 7):
             badge = TUNGA_TALENT_BADGE
 
         if total_projects in range(4, 9) or user_dedicated_months in range(7, 19):
