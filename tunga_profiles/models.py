@@ -245,7 +245,7 @@ class UserProfile(models.Model):
 
     def get_months_of_participation(self):
         total_months = 0
-        user_participations = self.user.project_participation.all()
+        user_participations = self.user.project_participation.filter(status=STATUS_ACCEPTED)
         for participation in user_participations:
             start_date = participation.created_at
             end_or_current_date = participation.project.closed_at or datetime.datetime.now()
